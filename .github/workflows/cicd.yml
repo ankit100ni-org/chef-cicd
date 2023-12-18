@@ -14,7 +14,6 @@ jobs:
     - name: Input Validation
       run : |
         echo "Input Validation"
-        exit 1
 
     - name: Checkout code
       uses: actions/checkout@v4
