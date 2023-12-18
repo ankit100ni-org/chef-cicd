@@ -14,56 +14,50 @@ jobs:
     - name: Input Validation
       run : |
         echo "Input Validation"
+        exit 1
 
-    - name: Save Secrets to File
-      shell: bash
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Installing Workstation
       run: |
-        echo "SEC=CHEFADMIN" >> $GITHUB_ENV
-        echo "${{ secrets[format('{0}', env.SEC)] }}"
+        wget https://packages.chef.io/files/stable/chef-workstation/23.12.1055/ubuntu/22.04/chef-workstation_23.12.1055-1_amd64.deb; sudo dpkg -i chef-workstation_23.12.1055-1_amd64.deb
+        echo 'yes' | sudo chef env
 
-      
-    # - name: Checkout code
-    #   uses: actions/checkout@v4
+    - name: Fetch Dev branch
+      run: git fetch origin dev:dev
 
-    # - name: Installing Workstation
-    #   run: |
-    #     wget https://packages.chef.io/files/stable/chef-workstation/23.12.1055/ubuntu/22.04/chef-workstation_23.12.1055-1_amd64.deb; sudo dpkg -i chef-workstation_23.12.1055-1_amd64.deb
-    #     echo 'yes' | sudo chef env
+    - name: Metadata Check
+      run: |
+        git branch
+        sudo chmod 777 .github/workflows/metadatacheck.sh
+        sudo bash .github/workflows/metadatacheck.sh
 
-    # - name: Fetch Dev branch
-    #   run: git fetch origin dev:dev
+    - name: Linting Check
+      run: cookstyle
 
-    # - name: Metadata Check
-    #   run: |
-    #     git branch
-    #     sudo chmod 777 .github/workflows/metadatacheck.sh
-    #     sudo bash .github/workflows/metadatacheck.sh
+    - name: Kitchen
+      run: | 
+        kitchen verify
+        kitchen destroy
 
-    # - name: Linting Check
-    #   run: cookstyle
+    - name: Policy Management
+      run: | 
+        sudo chmod 777 .github/workflows/setup_workstation.sh
+        sudo ./.github/workflows/setup_workstation.sh "$ORG_DATA" "$CHEFADMIN" "$TESTUSER"
+      env:
+        ORG_DATA: ${{ vars.ORG_DETAILS }}
+        CHEFADMIN: ${{ secrets.CHEFADMIN }}
+        TESTUSER: ${{ secrets.TESTUSER }}
 
-    # - name: Kitchen
-    #   run: | 
-    #     kitchen verify
-    #     kitchen destroy
+    - name: Set up Git
+      run: |
+        git config user.email "ankit.soni@progress.com"
+        git config user.name "ankit100ni"
 
-    # - name: Policy Management
-    #   run: | 
-    #     sudo chmod 777 .github/workflows/setup_workstation.sh
-    #     sudo ./.github/workflows/setup_workstation.sh "$ORG_DATA" "$CHEFADMIN" "$TESTUSER"
-    #   env:
-    #     ORG_DATA: ${{ vars.ORG_DETAILS }}
-    #     CHEFADMIN: ${{ secrets.CHEFADMIN }}
-    #     TESTUSER: ${{ secrets.TESTUSER }}
-
-    # - name: Set up Git
-    #   run: |
-    #     git config user.email "ankit.soni@progress.com"
-    #     git config user.name "ankit100ni"
-
-    # - name: Merge Pull Request
-    #   if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
-    #   run: |
-    #     git checkout dev
-    #     git merge $GITHUB_REF --no-ff --no-edit
-    #     git push origin main
+    - name: Merge Pull Request
+      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
+      run: |
+        git checkout dev
+        git merge $GITHUB_REF --no-ff --no-edit
+        git push origin main
