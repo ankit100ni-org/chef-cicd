@@ -12,7 +12,8 @@ jobs:
 
     steps:
     - name: Input Validation
-      run : echo "Input Validation"
+      run : |
+        echo "Input Validation"
       
     - name: Checkout code
       uses: actions/checkout@v4
