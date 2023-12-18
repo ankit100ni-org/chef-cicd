@@ -39,28 +39,7 @@ jobs:
         kitchen verify
         kitchen destroy
 
-    - name: Set up environment
-      run: |
-        echo "SECRET_NAMES=$(echo "${{ secrets }}" | jq -r 'keys_unsorted[]')" >> $GITHUB_ENV
-        echo "${{ secrets }}"
-
-    - name: Create Secret Files
-      run: |
-        # Specify the location to store files
-        output_dir="/home/runner/.chef"
-
-        # Create output directory if it doesn't exist
-        mkdir -p "$output_dir"
-
-        # Loop through each secret and create a file
-        for secret_name in $SECRET_NAMES; do
-          secret_value="${!secret_name}"
-          echo "$secret_value" > "$output_dir/$secret_name.pem"
-          echo "File created: $output_dir/$secret_name.pem"
-        done
-        ls -lhrt /home/runner/.chef
-
-    - name: Setup Org
+    - name: Policy Management
       run: | 
         sudo chmod 777 .github/workflows/setup_workstation.sh
         sudo ./.github/workflows/setup_workstation.sh "$ORG_DATA" "$CHEFADMIN" "$TESTUSER"
