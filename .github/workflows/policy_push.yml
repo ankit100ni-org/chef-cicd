@@ -13,4 +13,4 @@ jobs:
 
     steps:
     - name: justForTesting
-      run: ls; pwd; tee; docker -v
+      run: ls; pwd; tee; docker -v; whoami
