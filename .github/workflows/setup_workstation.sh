@@ -33,9 +33,8 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
   echo $?
   knife client list
   echo $?
-  if [ $? -ne 0 ]; then
+  if [ $? != 0 ]; then
     echo "knife connectivity is failed for org $org_name"
-    echo "org_name : $org_name"
     failed_org+=($org_name)
   fi
   echo " $COUNTER "
