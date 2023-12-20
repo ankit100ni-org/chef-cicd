@@ -9,6 +9,7 @@ COUNTER=1
 
 # Create output directory if it doesn't exist
 mkdir -p "$output_dir"
+failed_org=()
 
 # Creating the pem file
 echo "$CHEFADMIN" > $HOME/.chef/chefadmin.pem
@@ -21,7 +22,7 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
   echo "[default]" > "$config_file"
   echo "client_name     = \"$client_name\"" >> "$config_file"
   echo "client_key      = '$HOME/.chef/$client_key_name_small.pem'" >> "$config_file"
-  echo "chef_server_url = 'ec2-13-233-133-198.ap-south-1.compute.amazonaws.com/organizations/$org_name'" >> "$config_file"
+  echo "chef_server_url = 'https://ec2-13-233-133-198.ap-south-1.compute.amazonaws.com/organizations/$org_name'" >> "$config_file"
   
   cat $config_file
   
@@ -29,6 +30,12 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
   knife ssl fetch 
   knife ssl check
   knife client list
+  if [ $? -ne 0 ]; then
+    echo "knife connectivity is failed for org " $org_name"
+    failed_org+=($org_name)
+  fi
   echo " $COUNTER "
   COUNTER=$[$COUNTER +1]
 done
+
+echo "Failed parameters: ${failed_org[@]}"
