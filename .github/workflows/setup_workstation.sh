@@ -42,4 +42,6 @@ done
 
 # Print the array of failed Organizations
 echo "Failed orgs: ${failed_org[@]}"
+echo "Failed orgs: $failed_org"
+
 
