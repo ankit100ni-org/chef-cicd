@@ -31,11 +31,13 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
   knife ssl check
   knife client list
   if [ $? -ne 0 ]; then
-    echo "knife connectivity is failed for org " $org_name"
+    echo "knife connectivity is failed for org $org_name"
     failed_org+=($org_name)
   fi
   echo " $COUNTER "
   COUNTER=$[$COUNTER +1]
 done
 
+# Print the array of failed Organizations
 echo "Failed parameters: ${failed_org[@]}"
+
