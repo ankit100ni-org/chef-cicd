@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, reopened, edited, synchronize]
     branches:
-      - dev, main
+      - dev
 
 jobs:
   build:
@@ -14,7 +14,19 @@ jobs:
     - name: Input Validation
       run : |
         echo "Input Validation"
-        echo "${{vars.GITHUB_ENV}}"
+    
+    - name: Save PR number
+      env:
+        PR_NUMBER: ${{ github.event.number }}
+      run: |
+        mkdir -p ./pr
+        echo $PR_NUMBER > ./pr/pr_number
+        echo "jai mata di" >> ./pr/pr_number
+    - uses: actions/upload-artifact@v3
+      with:
+        name: pr_number
+        path: pr/
+
 
     - name: Checkout code
       uses: actions/checkout@v4
