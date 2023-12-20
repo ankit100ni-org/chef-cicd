@@ -5,13 +5,10 @@ CHEFADMIN=$2
 TESTUSER=$3
 # Output directory location
 output_dir="$HOME/.chef"
-COUNTER=1
-failed_org=()
 
 # Create output directory if it doesn't exist
 mkdir -p "$output_dir"
-d=$(date +%Y%m%d_%H%M%S)
-failed_org_log="failed_org_log_${d}.txt"
+failed_org_log="failed_org_log_${date +%Y%m%d_%H%M%S}.txt"
 
 # Creating the pem file
 echo "$CHEFADMIN" > $HOME/.chef/chefadmin.pem
@@ -28,27 +25,15 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
   
   cat $config_file
   
-  sudo ls -lhrt $HOME/.chef
   knife ssl fetch 
-  echo $?
   knife ssl check
-  echo $?
   knife client list
   if [ $? != 0 ]; then
     echo "knife connectivity is failed for org $org_name"
     echo "knife connectivity is failed for org $org_name" >> "$failed_org_log"
-    # failed_org+=("$org_name")
-    # echo "${failed_org[*]}"
   fi
-  echo " $COUNTER "
-  COUNTER=$[$COUNTER +1]
 done
 
 # Print the array of failed Organizations
-if [ ${#failed_org[@]} > 0 ]; then
-    echo "${failed_org[@]}"
-    echo "$failed_org"
-fi
-
 cat $failed_org_log
 

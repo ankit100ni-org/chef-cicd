@@ -42,7 +42,7 @@ jobs:
 
     - name: Policy Management
       run: | 
-        sudo chmod 777 .github/workflows/setup_workstation.sh
+        sudo chmod 777 .github/workflows/policy_manage.sh
         sudo ./.github/workflows/setup_workstation.sh "$ORG_DATA" "$CHEFADMIN" "$TESTUSER"
       env:
         ORG_DATA: ${{ vars.ORG_DETAILS }}
