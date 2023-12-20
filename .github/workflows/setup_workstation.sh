@@ -28,8 +28,11 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
   
   sudo ls -lhrt $HOME/.chef
   knife ssl fetch 
+  echo $?
   knife ssl check
+  echo $?
   knife client list
+  echo $?
   if [ $? -ne 0 ]; then
     echo "knife connectivity is failed for org $org_name"
     failed_org+=($org_name)
@@ -39,5 +42,5 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
 done
 
 # Print the array of failed Organizations
-echo "Failed parameters: ${failed_org[@]}"
+echo "Failed orgs: ${failed_org[@]}"
 
