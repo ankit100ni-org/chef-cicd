@@ -23,7 +23,7 @@ jobs:
 
     - name: Trigger the Workflow
       run: |
-        python .github/workflows/triggerscripts.py ${{ env.pat_token }}  'ankit100ni-org'  'InvokeGitHubActionsCalled' 'CalledWorkflow' ${{ env.parameter1 }} ${{ env.parameter2 }}
+        python .github/workflows/PythonScripts.py ${{ env.pat_token }}  'ankit100ni-org'  'InvokeGitHubActionsCalled' 'CalledWorkflow' ${{ env.parameter1 }} ${{ env.parameter2 }}
 
     # - name: Calling Pipeline
     #   run: |
