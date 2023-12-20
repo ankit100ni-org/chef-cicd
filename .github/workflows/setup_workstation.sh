@@ -44,13 +44,11 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
 done
 
 # Print the array of failed Organizations
-echo "Failed orgs: ${failed_org[*]}"
 if [ ${#failed_org[@]} > 0 ]; then
     echo "${failed_org[@]}"
     echo "$failed_org"
 fi
 
-cat $d
 
 
 
