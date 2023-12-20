@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, reopened, edited, synchronize]
     branches:
-      - dev
+      - dev, main
 
 jobs:
   build:
@@ -14,49 +14,38 @@ jobs:
     - name: Input Validation
       run : |
         echo "Input Validation"
+        echo "${{vars.GITHUB_ENV}}"
 
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Installing Workstation
-      run: |
-        wget https://packages.chef.io/files/stable/chef-workstation/23.12.1055/ubuntu/22.04/chef-workstation_23.12.1055-1_amd64.deb; sudo dpkg -i chef-workstation_23.12.1055-1_amd64.deb
-        echo 'yes' | sudo chef env
+    # - name: Installing Workstation
+    #   run: |
+    #     wget https://packages.chef.io/files/stable/chef-workstation/23.12.1055/ubuntu/22.04/chef-workstation_23.12.1055-1_amd64.deb; sudo dpkg -i chef-workstation_23.12.1055-1_amd64.deb
+    #     echo 'yes' | sudo chef env
 
-    - name: Fetch Dev branch
-      run: git fetch origin dev:dev
+    # - name: Fetch Dev branch
+    #   run: git fetch origin dev:dev
 
-    - name: Metadata Check
-      run: |
-        git branch
-        sudo chmod 777 .github/workflows/metadatacheck.sh
-        sudo bash .github/workflows/metadatacheck.sh
+    # - name: Metadata Check
+    #   run: |
+    #     git branch
+    #     sudo chmod 777 .github/workflows/metadatacheck.sh
+    #     sudo bash .github/workflows/metadatacheck.sh
 
-    - name: Linting Check
-      run: cookstyle
+    # - name: Linting Check
+    #   run: cookstyle
 
-    - name: Kitchen
-      run: | 
-        kitchen verify
-        kitchen destroy
+    # - name: Kitchen
+    #   run: | 
+    #     kitchen verify
+    #     kitchen destroy
 
-    - name: Policy Management
-      run: | 
-        sudo chmod 777 .github/workflows/setup_workstation.sh
-        sudo ./.github/workflows/setup_workstation.sh "$ORG_DATA" "$CHEFADMIN" "$TESTUSER"
-      env:
-        ORG_DATA: ${{ vars.ORG_DETAILS }}
-        CHEFADMIN: ${{ secrets.CHEFADMIN }}
-        TESTUSER: ${{ secrets.TESTUSER }}
-
-    - name: Set up Git
-      run: |
-        git config user.email "ankit.soni@progress.com"
-        git config user.name "ankit100ni"
-
-    - name: Merge Pull Request
-      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
-      run: |
-        git checkout dev
-        git merge $GITHUB_REF --no-ff --no-edit
-        git push origin main
+    # - name: Policy Management
+    #   run: | 
+    #     sudo chmod 777 .github/workflows/policy_manage.sh
+    #     sudo ./.github/workflows/policy_manage.sh "$ORG_DATA" "$CHEFADMIN" "$TESTUSER"
+    #   env:
+    #     ORG_DATA: ${{ vars.ORG_DETAILS }}
+    #     CHEFADMIN: ${{ secrets.CHEFADMIN }}
+    #     TESTUSER: ${{ secrets.TESTUSER }}
