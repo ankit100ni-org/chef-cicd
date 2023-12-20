@@ -50,5 +50,5 @@ if [ ${#failed_org[@]} > 0 ]; then
     echo "$failed_org"
 fi
 
-cat eval $failed_org_log
+cat $failed_org_log
 
