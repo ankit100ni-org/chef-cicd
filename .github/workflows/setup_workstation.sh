@@ -6,10 +6,10 @@ TESTUSER=$3
 # Output directory location
 output_dir="$HOME/.chef"
 COUNTER=1
+failed_org=()
 
 # Create output directory if it doesn't exist
 mkdir -p "$output_dir"
-failed_org=()
 
 # Creating the pem file
 echo "$CHEFADMIN" > $HOME/.chef/chefadmin.pem
