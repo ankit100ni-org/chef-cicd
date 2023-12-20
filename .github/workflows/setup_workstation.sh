@@ -35,6 +35,7 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
   if [ $? != 0 ]; then
     echo "knife connectivity is failed for org $org_name"
     failed_org+=("$org_name")
+    echo $failed_org
   fi
   echo " $COUNTER "
   COUNTER=$[$COUNTER +1]
@@ -42,7 +43,7 @@ done
 
 # Print the array of failed Organizations
 echo "Failed orgs: ${failed_org[*]}"
-if [ ${#failed_parameters[@]} > 0 ]; then
+if [ ${#failed_org[@]} > 0 ]; then
     echo "Failed Orgs: ${failed_org[@]}"
 fi
 
