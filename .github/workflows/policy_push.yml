@@ -52,6 +52,7 @@ jobs:
             issue_number: issue_number,
             body: 'Thank you for the PR!'
           });
+          pwd
           ls
           cat ./pr_number
 
