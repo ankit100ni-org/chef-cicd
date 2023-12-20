@@ -44,7 +44,8 @@ done
 # Print the array of failed Organizations
 echo "Failed orgs: ${failed_org[*]}"
 if [ ${#failed_org[@]} > 0 ]; then
-    echo "Failed Orgs: ${failed_org[@]}"
+    echo "${failed_org[@]}"
+    echo "$failed_org"
 fi
 
 
