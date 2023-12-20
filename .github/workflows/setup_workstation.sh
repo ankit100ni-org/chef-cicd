@@ -11,7 +11,7 @@ failed_org=()
 # Create output directory if it doesn't exist
 mkdir -p "$output_dir"
 d=$(date +%Y%m%d_%H%M%S)
-touch $d
+failed_org_log="failed_org_log_${d}.txt"
 
 # Creating the pem file
 echo "$CHEFADMIN" > $HOME/.chef/chefadmin.pem
@@ -36,8 +36,9 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
   knife client list
   if [ $? != 0 ]; then
     echo "knife connectivity is failed for org $org_name"
-    failed_org+=("$org_name")
-    echo "${failed_org[*]}"
+    echo "knife connectivity is failed for org $org_name" >> "$failed_org_log"
+    # failed_org+=("$org_name")
+    # echo "${failed_org[*]}"
   fi
   echo " $COUNTER "
   COUNTER=$[$COUNTER +1]
@@ -49,6 +50,5 @@ if [ ${#failed_org[@]} > 0 ]; then
     echo "$failed_org"
 fi
 
-
-
+cat eval $failed_org_log
 
