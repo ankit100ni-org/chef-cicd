@@ -21,18 +21,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # - name: Trigger the Workflow
-    #   run: |
-    #     python .github/workflows/PythonScripts.py ${{ env.pat_token }}  'ankit100ni-org'  'base-policy' 'base' ${{ env.parameter1 }} ${{ env.parameter2 }}
-
     - name: Calling Pipeline
       run: |
+        echo $(env.GITHUB_BASE_REF)
         TOKEN="${{ secrets.GH_TOKEN }}"
         OWNER="ankit100ni-org"
         REPO="base-policy"
         Workflow_Name="base"
-        parameter1="value1"
-        parameter2="value2"
+        parameter1=$(cat Policyfile.rb | grep "^name" | awk '{print $2}' | tr -d \' | tr -d '[:blank:]')
+        parameter2=${{vars.GITHUB_BASE_REF}}
         
         curl -X POST \
           -H "Accept: application/vnd.github.v3+json" \
