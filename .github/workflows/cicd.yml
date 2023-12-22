@@ -71,10 +71,10 @@ jobs:
             "https://api.github.com/repos/$OWNER/$REPO/dispatches"
         done
 
-    # - name: Merge
-    #   run: |
-    #     echo "${{ secrets.GH_TOKEN }}" > /tmp/token.txt
-    #     cat /tmp/token.txt
-    #     gh auth login --with-token < /tmp/token.txt
-    #     gh pr list
-    #     gh pr merge -m ${{ github.event.number }}
+    - name: Merge
+      run: |
+        echo "${{ secrets.GH_TOKEN }}" > /tmp/token.txt
+        cat /tmp/token.txt
+        gh auth login --with-token < /tmp/token.txt
+        gh pr list
+        gh pr merge -m ${{ github.event.number }}
