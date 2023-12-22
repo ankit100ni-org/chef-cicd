@@ -54,7 +54,7 @@ jobs:
 
     - name: Calling Pipeline
       run: |
-        ('base-policy' 'base-policy2' 'base-policy3' ) | while read -r base; do
+        ('base-policy' 'base_policy2' 'base_policy3' ) | while read -r base; do
           TOKEN="${{ secrets.GH_TOKEN }}"
           OWNER="ankit100ni-org"
           REPO="$(base)"
