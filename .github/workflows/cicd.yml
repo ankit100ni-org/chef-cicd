@@ -59,8 +59,8 @@ jobs:
         do
           TOKEN="${{ secrets.GH_TOKEN }}"
           OWNER="ankit100ni-org"
-          REPO="$(base)"
-          Workflow_Name="$(base)"
+          REPO="$base"
+          Workflow_Name="$base"
           parameter1=$(cat Policyfile.rb | grep "^name" | awk '{print $2}' | tr -d \' | tr -d '[:blank:]')
           parameter2=${{ github.base_ref }}
           
