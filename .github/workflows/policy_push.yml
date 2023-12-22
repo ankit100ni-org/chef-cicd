@@ -2,7 +2,7 @@ name: policy_push
 
 on:
   workflow_run:
-    workflows: ["CI/CD Pipeline"]
+    workflows: ["CI/CD Pipelines"]
     types:
       - completed
     
