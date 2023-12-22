@@ -32,8 +32,10 @@ echo "$json_data" | jq -r 'to_entries[] | "\(.key) \(.value.client_name) \(.valu
     echo "knife connectivity is failed for org $org_name"
     echo "knife connectivity is failed for org $org_name" >> "$failed_org_log"
   fi
+  chef install Policyfile.rb
+  chef push dev Policyfile.lock.json
 done
 
-# Print the array of failed Organizations
-cat $failed_org_log
+
+
 
