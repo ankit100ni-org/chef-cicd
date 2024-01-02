@@ -61,7 +61,7 @@ jobs:
         OWNER="ankit100ni-org"
         keys=$(echo "$POLICY_DATA" | jq -r 'keys[]')
         for key in $keys; do
-          if echo "$POLICY_DATA" | jq -r --arg key "$key" '.[$key] | index("${parameter1}")' | grep -q "null"; then
+          if echo "$POLICY_DATA" | jq -r --arg key "$key" --arg parameter1 "$parameter1" '.[$key] | index($parameter1)' | grep -q "null"; then
             echo "INFO: This repo in not the part of Base Policy."
           else
             echo "INFO: This repo is part of the Base Policy."
