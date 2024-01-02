@@ -55,13 +55,23 @@ jobs:
 
     - name: Calling Pipeline
       run: |
+        parameter1=$(cat Policyfile.rb | grep "^name" | awk '{print $2}' | tr -d \' | tr -d '[:blank:]')
+        parameter2=${{ github.base_ref }}
+        TOKEN="${{ secrets.GH_TOKEN }}"
+        OWNER="ankit100ni-org"
         # Parse JSON data and iterate over each object
         for policy in $(echo "$POLICY_DATA" | jq -c '.[]'); do
-          # Check if "pipe" is present in the list
-          if [[ $policy =~ "pipe" ]]; then
-            echo "Yes"
+          # Check if "Policy" is present in the Base Policy
+          if [[ $policy =~ $parameter1 ]]; then
+            echo "INFO: This repo is part of the Base Policy."
+            REPO="$base"
+            curl -X POST \
+              -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: token $TOKEN" \
+              -d "{\"event_type\": \"$Workflow_Name\", \"client_payload\": {\"parameter1\": \"$parameter1\", \"parameter2\": \"$parameter2\"}}" \
+              "https://api.github.com/repos/$OWNER/$REPO/dispatches"
           else
-            echo "No"
+            echo "INFO: This repo in not the part of Base Policy."
           fi
         done
 
