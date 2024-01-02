@@ -59,21 +59,37 @@ jobs:
         parameter2=${{ github.base_ref }}
         TOKEN="${{ secrets.GH_TOKEN }}"
         OWNER="ankit100ni-org"
-        # Parse JSON data and iterate over each object
-        for policy in $(echo "$POLICY_DATA" | jq -c '.[]'); do
-          # Check if "Policy" is present in the Base Policy
-          if [[ $policy =~ $parameter1 ]]; then
+
+        keys=$(echo "$json_data" | jq -r 'keys[]')
+
+        for key in $keys; do
+          if echo "$json_data" | jq -r --arg key "$key" '.[$key] | index("pipe")' | grep -q "null"; then
+            echo "INFO: This repo in not the part of Base Policy."
+          else
             echo "INFO: This repo is part of the Base Policy."
-            REPO="$base"
+            REPO="$key"
             curl -X POST \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: token $TOKEN" \
               -d "{\"event_type\": \"$Workflow_Name\", \"client_payload\": {\"parameter1\": \"$parameter1\", \"parameter2\": \"$parameter2\"}}" \
               "https://api.github.com/repos/$OWNER/$REPO/dispatches"
-          else
-            echo "INFO: This repo in not the part of Base Policy."
           fi
         done
+        # # Parse JSON data and iterate over each object
+        # for policy in $(echo "$POLICY_DATA" | jq -c '.[]'); do
+        #   # Check if "Policy" is present in the Base Policy
+        #   if [[ $policy =~ $parameter1 ]]; then
+        #     echo "INFO: This repo is part of the Base Policy."
+        #     REPO="$base"
+        #     curl -X POST \
+        #       -H "Accept: application/vnd.github.v3+json" \
+        #       -H "Authorization: token $TOKEN" \
+        #       -d "{\"event_type\": \"$Workflow_Name\", \"client_payload\": {\"parameter1\": \"$parameter1\", \"parameter2\": \"$parameter2\"}}" \
+        #       "https://api.github.com/repos/$OWNER/$REPO/dispatches"
+        #   else
+        #     echo "INFO: This repo in not the part of Base Policy."
+        #   fi
+        # done
 
         # declare -a arr=('base-policy' 'base_policy2')
         # for base in "${arr[@]}"
