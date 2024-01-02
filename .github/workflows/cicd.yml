@@ -13,6 +13,7 @@ jobs:
       pat_token: ${{ secrets.GH_TOKEN }}
       parameter1: '42574587345'
       parameter2: 'TestStringWithoutSpace'
+      POLICY_DATA: ${{ vars.POLICY_CONTENTS }}
     steps:
     - name: Input Validation
       run : |
@@ -54,7 +55,7 @@ jobs:
 
     - name: Calling Pipeline
       run: |
-        echo "${{ vars.POLICY_CONTENTS }}"
+        echo "$POLICY_DATA"
         # declare -a arr=('base-policy' 'base_policy2')
         # for base in "${arr[@]}"
         # do
