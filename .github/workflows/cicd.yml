@@ -66,6 +66,7 @@ jobs:
           else
             echo "INFO: This repo is part of the Base Policy."
             REPO="$key"
+            Workflow_Name="$key"
             curl -X POST \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: token $TOKEN" \
