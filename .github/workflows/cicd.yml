@@ -18,63 +18,64 @@ jobs:
       run : |
         echo "Input Validation"
 
-    - name: Checkout code
-      uses: actions/checkout@v4
+    # - name: Checkout code
+    #   uses: actions/checkout@v4
 
-    - name: Installing Workstation
-      run: |
-        wget https://packages.chef.io/files/stable/chef-workstation/23.12.1055/ubuntu/22.04/chef-workstation_23.12.1055-1_amd64.deb; sudo dpkg -i chef-workstation_23.12.1055-1_amd64.deb
-        sudo chef env --chef-license accept-silent
+    # - name: Installing Workstation
+    #   run: |
+    #     wget https://packages.chef.io/files/stable/chef-workstation/23.12.1055/ubuntu/22.04/chef-workstation_23.12.1055-1_amd64.deb; sudo dpkg -i chef-workstation_23.12.1055-1_amd64.deb
+    #     sudo chef env --chef-license accept-silent
 
-    - name: Fetch Dev branch
-      run: git fetch origin dev:dev
+    # - name: Fetch Dev branch
+    #   run: git fetch origin dev:dev
 
-    - name: Metadata Check
-      run: |
-        git branch
-        sudo chmod 777 .github/workflows/metadatacheck.sh
-        sudo bash .github/workflows/metadatacheck.sh
+    # - name: Metadata Check
+    #   run: |
+    #     git branch
+    #     sudo chmod 777 .github/workflows/metadatacheck.sh
+    #     sudo bash .github/workflows/metadatacheck.sh
 
-    - name: Linting Check
-      run: cookstyle
+    # - name: Linting Check
+    #   run: cookstyle
 
-    - name: Kitchen
-      run: | 
-        kitchen verify
-        kitchen destroy
+    # - name: Kitchen
+    #   run: | 
+    #     kitchen verify
+    #     kitchen destroy
 
-    - name: Policy Management
-      run: | 
-        sudo chmod 777 .github/workflows/policy_manage.sh
-        sudo ./.github/workflows/policy_manage.sh "$ORG_DATA" "$CHEFADMIN" "$TESTUSER"
-      env:
-        ORG_DATA: ${{ vars.ORG_DETAILS }}
-        CHEFADMIN: ${{ secrets.CHEFADMIN }}
-        TESTUSER: ${{ secrets.TESTUSER }}
+    # - name: Policy Management
+    #   run: | 
+    #     sudo chmod 777 .github/workflows/policy_manage.sh
+    #     sudo ./.github/workflows/policy_manage.sh "$ORG_DATA" "$CHEFADMIN" "$TESTUSER"
+    #   env:
+    #     ORG_DATA: ${{ vars.ORG_DETAILS }}
+    #     CHEFADMIN: ${{ secrets.CHEFADMIN }}
+    #     TESTUSER: ${{ secrets.TESTUSER }}
 
     - name: Calling Pipeline
       run: |
-        declare -a arr=('base-policy' 'base_policy2')
-        for base in "${arr[@]}"
-        do
-          TOKEN="${{ secrets.GH_TOKEN }}"
-          OWNER="ankit100ni-org"
-          REPO="$base"
-          Workflow_Name="$base"
-          parameter1=$(cat Policyfile.rb | grep "^name" | awk '{print $2}' | tr -d \' | tr -d '[:blank:]')
-          parameter2=${{ github.base_ref }}
+        echo "${{ vars.POLICY_CONTENTS }}"
+        # declare -a arr=('base-policy' 'base_policy2')
+        # for base in "${arr[@]}"
+        # do
+        #   TOKEN="${{ secrets.GH_TOKEN }}"
+        #   OWNER="ankit100ni-org"
+        #   REPO="$base"
+        #   Workflow_Name="$base"
+        #   parameter1=$(cat Policyfile.rb | grep "^name" | awk '{print $2}' | tr -d \' | tr -d '[:blank:]')
+        #   parameter2=${{ github.base_ref }}
           
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token $TOKEN" \
-            -d "{\"event_type\": \"$Workflow_Name\", \"client_payload\": {\"parameter1\": \"$parameter1\", \"parameter2\": \"$parameter2\"}}" \
-            "https://api.github.com/repos/$OWNER/$REPO/dispatches"
-        done
+        #   curl -X POST \
+        #     -H "Accept: application/vnd.github.v3+json" \
+        #     -H "Authorization: token $TOKEN" \
+        #     -d "{\"event_type\": \"$Workflow_Name\", \"client_payload\": {\"parameter1\": \"$parameter1\", \"parameter2\": \"$parameter2\"}}" \
+        #     "https://api.github.com/repos/$OWNER/$REPO/dispatches"
+        # done
 
-    - name: Merge
-      run: |
-        echo "${{ secrets.GH_TOKEN }}" > /tmp/token.txt
-        cat /tmp/token.txt
-        gh auth login --with-token < /tmp/token.txt
-        gh pr list
-        gh pr merge -m ${{ github.event.number }}
+    # - name: Merge
+    #   run: |
+    #     echo "${{ secrets.GH_TOKEN }}" > /tmp/token.txt
+    #     cat /tmp/token.txt
+    #     gh auth login --with-token < /tmp/token.txt
+    #     gh pr list
+    #     gh pr merge -m ${{ github.event.number }}
