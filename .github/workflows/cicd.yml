@@ -59,11 +59,9 @@ jobs:
         parameter2=${{ github.base_ref }}
         TOKEN="${{ secrets.GH_TOKEN }}"
         OWNER="ankit100ni-org"
-
-        keys=$(echo "$json_data" | jq -r 'keys[]')
-
+        keys=$(echo "$POLICY_DATA" | jq -r 'keys[]')
         for key in $keys; do
-          if echo "$json_data" | jq -r --arg key "$key" '.[$key] | index("pipe")' | grep -q "null"; then
+          if echo "$POLICY_DATA" | jq -r --arg key "$key" '.[$key] | index("pipe")' | grep -q "null"; then
             echo "INFO: This repo in not the part of Base Policy."
           else
             echo "INFO: This repo is part of the Base Policy."
