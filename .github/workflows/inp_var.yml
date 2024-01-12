@@ -1,0 +1,27 @@
+name: CI/CD Pipeline
+
+on:
+  workflow_dispatch:
+    inputs: 
+      calledworkflow_name:
+        description: 'Change Number'
+        required: true
+        default: 'Change Number'
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches:
+      - dev
+
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    env: 
+      pat_token: ${{ secrets.GH_TOKEN }}
+      parameter1: '42574587345'
+      parameter2: 'TestStringWithoutSpace'
+      POLICY_DATA: ${{ vars.POLICY_CONTENTS }}
+    steps:
+    - name: Input Validation
+      run : |
+        echo "Input Validation"
